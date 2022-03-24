@@ -7,7 +7,7 @@ from PIL import Image
 
 path = os.path.dirname(os.path.abspath(__file__))
 
-ifile = "texture/road.jpg"
+ifile = "texture/cherryblossoms.jpg"
 ofile = "texture/img.js"
 
 image = numpy.asarray(Image.open(ifile))
@@ -26,23 +26,23 @@ message = """"""
 if image.shape[2]==4:
     rt = ""
     rt += message
-    rt += "\nimg = [\n"
+    rt += "[\n"
     for y in range(image.shape[0]-1):
         rt += "    ["
         for x in range(image.shape[1]-1):
             rt += "["+str(image[y,x][0])+","+str(image[y,x][1])+","+str(image[y,x][2])+","+str(image[y,x][3])+"],"
         rt += "],"
-    rt += "\n]"
+    rt += "\n],"
 else:
     rt = ""
     rt += message
-    rt += "\nimg = [\n  "
+    rt += "[\n  "
     for y in range(image.shape[0]-1):
         rt += "["
         for x in range(image.shape[1]-1):
             rt += "["+str(image[y,x][0])+","+str(image[y,x][1])+","+str(image[y,x][2])+",255"+"],"
         rt += "],"
-    rt += "\n]"
+    rt += "\n],"
 
 
 
