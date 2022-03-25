@@ -32,8 +32,8 @@ size = input("input size: ").split(" ")
 image = cv2.blur(image,(50,50))
 image = cv2.resize(image,(int(size[0]),int(size[1]))) # resize image
 imageb = cv2.resize(imageb,(int(size[0]),int(size[1]))) # resize image
-cv2.imwrite("a.png",image)
-cv2.imwrite("b.png",imageb)
+# cv2.imwrite("a.png",image)
+# cv2.imwrite("b.png",imageb)
 print("size: "+str(image.shape)) # show resized size
 
 min = image.min()
