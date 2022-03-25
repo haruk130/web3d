@@ -57,22 +57,33 @@
                             <tr>
                                 <td><button onclick="move(2)" style="width: 100%;">↑</button></td>
                                 <td><center>Move</center></td>
+                                <td><center></center></td>
                                 <td><button onclick="move(-2)" style="width: 100%;">↓</button></td>
                             </tr>
                             <tr>
                                 <td><button onclick="camera[1][0]+=12" style="width: 100%;">←</button></td>
                                 <td><center>H</center></td>
+                                <td><center></center></td>
                                 <td><button onclick="camera[1][0]-=12" style="width: 100%;">→</button></td>
                             </tr>
                             <tr>
                                 <td><button onclick="camera[1][1]-=12" style="width: 100%;">↑</button></td>
                                 <td><center>V</center></td>
+                                <td><center></center></td>
                                 <td><button onclick="camera[1][1]+=12" style="width: 100%;">↓</button></td>
                             </tr>
                             <tr>
                                 <td><button onclick="viewr(20)" style="width: 100%;">↑</button></td>
                                 <td><center>View</center></td>
+                                <td><center></center></td>
                                 <td><button onclick="viewr(-20)" style="width: 100%;">↓</button></td>
+                            </tr>
+                            <tr>
+                                <td><center>解像度</center></td>
+                                <td>
+                                    <select id="resolution">
+                                    </select>
+                                </td>
                             </tr>
                         </table>
                     </details>
@@ -109,8 +120,27 @@
         "FHD": [1980,1020,16,9,28],
         "4K": [3840,2160,16,9,54],
     };
+    let display_resolution;
 
-    let display_resolution = display_list["VGA"];
+    {
+        // make display resolution list
+        drsel = document.getElementById("resolution");
+        dlkeys = Object.keys(display_list);
+        for (i=0;i<dlkeys.length;i++) {
+            oel = document.createElement("option");
+            if (i==0) {
+                display_resolution = display_list[dlkeys[i]];
+            }
+            oel.value = dlkeys[i];
+            oel.textContent = dlkeys[i];
+            drsel.appendChild(oel);
+        }
+        drsel.onchange = event => {
+            display_resolution = display_list[drsel.value];
+            resizeImg();
+        };
+    }
+
 
     window.onresize = resizeImg;
     resizeImg(); // first resize
@@ -203,8 +233,10 @@
 
     function field_cut(field) {
         ra = [];
-        for (y=Math.floor(cut_field_pos[1]);y<cut_field_pos[1]+cut_field_size[1];y++) {
-            ra.unshift(field[y].slice(Math.floor(cut_field_pos[0]),Math.floor(cut_field_pos[0])+cut_field_size[0]));
+        xc1 = Math.floor(cut_field_pos[0]/2)*2
+        xc2 = xc1+cut_field_size[0]
+        for (y=Math.floor(cut_field_pos[1]/2)*2+cut_field_size[1];y>cut_field_pos[1];y--) {
+            ra.push(field[y].slice(xc1,xc2));
         }
         return ra;
     }
@@ -302,7 +334,7 @@
         let f = field_;
         let b = fblock_;
         let bs = fieldbs/2;
-        fx = cut_field_pos[0]%1;fy = cut_field_pos[1]%1; // position's fraction
+        fx = cut_field_pos[0]%2;fy = cut_field_pos[1]%2; // position's fraction
         for (y=0;y<field_.length;y+=2) {
             for (x=0;x<field_[0].length;x+=2) {
                 let len_b_c = squared_length2d([[camera[0][0],camera[0][1]],[x,y]])
@@ -509,12 +541,12 @@ let keyd = {}
 }
 let keyw = {}
 {
-    keyw[87] = ()=>move(0.3);
-    keyw[83] = ()=>move(-0.3);
-    keyw[65] = ()=>camera[1][0]+=3;
-    keyw[68] = ()=>camera[1][0]-=3;
-    keyw[82] = ()=>camera[1][1]-=3;
-    keyw[70] = ()=>camera[1][1]+=3;
+    keyw[87] = ()=>move(0.05);
+    keyw[83] = ()=>move(-0.05);
+    keyw[65] = ()=>camera[1][0]+=1;
+    keyw[68] = ()=>camera[1][0]-=1;
+    keyw[82] = ()=>camera[1][1]-=1;
+    keyw[70] = ()=>camera[1][1]+=1;
 }
 let keystatus_d = {};
 
@@ -528,7 +560,7 @@ function keyinput() {
         }
     }
 }
-setInterval(keyinput,250)
+setInterval(keyinput,100)
 
 // safari 拡大縮小阻止
 // 参考 https://iphone.f-tools.net/html5/Kakudai-Kinsi.html
@@ -545,8 +577,8 @@ if ((now - t) < 350){
 t = now;
 }, false);
 
-// resize window
 
+// resize window
 function resizeImg() {
     dw = display_resolution[2];
     dh = display_resolution[3];
