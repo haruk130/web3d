@@ -302,18 +302,20 @@
         let f = field_;
         let b = fblock_;
         let bs = fieldbs/2;
+        let fx = cut_field_pos[0];let fy = cut_field_pos[1]; // position's fraction
         for (y=0;y<field_.length;y+=2) {
             for (x=0;x<field_[0].length;x+=2) {
-                if (squared_length2d([[camera[0][0],camera[0][1]],[x,y]])<(view_range/1)**2+20) {
-                    i=y;j=x
-                    rd.push([[j,i,f[i][j]],[j,i-1,f[i-1][j]],[j+1,i-1,f[i-1][j+1]],[b[i][j+1],[[bs,bs],[bs,-bs+bs],[bs+bs,-bs+bs]]]])
-                    rd.push([[j,i,f[i][j]],[j+1,i,f[i][j+1]],[j+1,i-1,f[i-1][j+1]],[b[i][j+1],[[bs,bs],[bs+bs,bs],[bs+bs,-bs+bs]]]])
-                    rd.push([[j,i,f[i][j]],[j+1,i,f[i][j+1]],[j+1,i+1,f[i+1][j+1]],[b[i+1][j+1],[[bs,bs],[bs+bs,bs],[bs+bs,bs+bs]]]])
-                    rd.push([[j,i,f[i][j]],[j,i+1,f[i+1][j]],[j+1,i+1,f[i+1][j+1]],[b[i+1][j+1],[[bs,bs],[bs,bs+bs],[bs+bs,bs+bs]]]])
-                    rd.push([[j,i,f[i][j]],[j,i+1,f[i+1][j]],[j-1,i+1,f[i+1][j-1]],[b[i+1][j],[[bs,bs],[bs,bs+bs],[-bs+bs,bs+bs]]]])
-                    rd.push([[j,i,f[i][j]],[j-1,i,f[i][j-1]],[j-1,i+1,f[i+1][j-1]],[b[i+1][j],[[bs,bs],[-bs+bs,bs],[-bs+bs,bs+bs]]]])
-                    rd.push([[j,i,f[i][j]],[j-1,i-1,f[i-1][j-1]],[j-1,i,f[i][j-1]],[b[i][j],[[bs,bs],[-bs+bs,-bs+bs],[-bs+bs,bs]]]])
-                    rd.push([[j,i,f[i][j]],[j-1,i-1,f[i-1][j-1]],[j,i-1,f[i-1][j]],[b[i][j],[[bs,bs],[-bs+bs,-bs+bs],[bs,-bs+bs]]]])
+                let len_b_c = squared_length2d([[camera[0][0],camera[0][1]],[x,y]])
+                if (len_b_c<(view_range/1)**2 & len_b_c>1) {
+                    y_=y;x_=x
+                    rd.push([[x_,y_,f[y][x]],[x_,y_-1,f[y-1][x]],[x_+1,y_-1,f[y-1][x+1]],[b[y][x+1],[[bs,bs],[bs,-bs+bs],[bs+bs,-bs+bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_+1,y_,f[y][x+1]],[x_+1,y_-1,f[y-1][x+1]],[b[y][x+1],[[bs,bs],[bs+bs,bs],[bs+bs,-bs+bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_+1,y_,f[y][x+1]],[x_+1,y_+1,f[y+1][x+1]],[b[y+1][x+1],[[bs,bs],[bs+bs,bs],[bs+bs,bs+bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_,y_+1,f[y+1][x]],[x_+1,y_+1,f[y+1][x+1]],[b[y+1][x+1],[[bs,bs],[bs,bs+bs],[bs+bs,bs+bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_,y_+1,f[y+1][x]],[x_-1,y_+1,f[y+1][x-1]],[b[y+1][x],[[bs,bs],[bs,bs+bs],[-bs+bs,bs+bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_-1,y_,f[y][x-1]],[x_-1,y_+1,f[y+1][x-1]],[b[y+1][x],[[bs,bs],[-bs+bs,bs],[-bs+bs,bs+bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_-1,y_-1,f[y-1][x-1]],[x_-1,y_,f[y][x-1]],[b[y][x],[[bs,bs],[-bs+bs,-bs+bs],[-bs+bs,bs]]]])
+                    rd.push([[x_,y_,f[y][x]],[x_-1,y_-1,f[y-1][x-1]],[x_,y_-1,f[y-1][x]],[b[y][x],[[bs,bs],[-bs+bs,-bs+bs],[bs,-bs+bs]]]])
                 }
             }
         }
