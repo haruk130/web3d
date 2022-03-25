@@ -153,7 +153,7 @@
     let field_margin = cut_field_size;
     let max_range = 500; // 最大の描画範囲
     let min_range = 60; // 最小の描画範囲
-    let view_range = 60; // 標準の描画範囲
+    let view_range = 70; // 標準の描画範囲
     let view_angle = 70; // 視野角
     let camera = [
         [field_margin[0]/2,field_margin[1]/2,10], // 座標 [x,y,z]
@@ -520,9 +520,11 @@
 
 // keyboard
 document.onkeydown = function(e) {
-    keystatus_d[event.keyCode] = true;
-    if (event.keyCode in keyw) {
-        keyw[event.keyCode]();
+    if (keystatus_d[event.keyCode]!=true) {
+        keystatus_d[event.keyCode] = true;
+        if (event.keyCode in keyw) {
+            keyw[event.keyCode]();
+        }
     }
     document.getElementById("control_details").open=false;
 };
@@ -541,12 +543,12 @@ let keyd = {}
 }
 let keyw = {}
 {
-    keyw[87] = ()=>move(0.05);
-    keyw[83] = ()=>move(-0.05);
-    keyw[65] = ()=>camera[1][0]+=1;
-    keyw[68] = ()=>camera[1][0]-=1;
-    keyw[82] = ()=>camera[1][1]-=1;
-    keyw[70] = ()=>camera[1][1]+=1;
+    keyw[87] = ()=>move(1);
+    keyw[83] = ()=>move(-1);
+    keyw[65] = ()=>camera[1][0]+=3;
+    keyw[68] = ()=>camera[1][0]-=3;
+    keyw[82] = ()=>camera[1][1]-=3;
+    keyw[70] = ()=>camera[1][1]+=3;
 }
 let keystatus_d = {};
 
