@@ -162,7 +162,7 @@
     let field_margin = cut_field_size;
     let max_range = 500; // 最大の描画範囲
     let min_range = 60; // 最小の描画範囲
-    let view_range = 70; // 標準の描画範囲
+    let view_range = 100; // 標準の描画範囲
     let view_angle = 70; // 視野角
     let camera = [
         [field_margin[0]/2,field_margin[1]/2,10], // 座標 [x,y,z]
@@ -325,7 +325,7 @@
         ctx = canvasOutput.getContext('2d');
         {
             fp= filed_to_polygon(cut_field,cut_fieldblock); 
-            fp=add_objects(fp,cube)
+            //fp=add_objects(fp,cube)
             csd_ps(ctx,fp);
             minimap(ctx);
             //console.table(ps)

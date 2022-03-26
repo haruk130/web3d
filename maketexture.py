@@ -7,7 +7,7 @@ from PIL import Image
 
 path = os.path.dirname(os.path.abspath(__file__))
 
-ifile = "texture/white.jpg"
+ifile = "texture/stone.jpg"
 ofile = "texture/img.js"
 
 image = numpy.asarray(Image.open(ifile))
