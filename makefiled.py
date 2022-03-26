@@ -32,7 +32,7 @@ imageb = cv2.cvtColor(imageb, cv2.COLOR_BGR2RGB)
 print("original size: "+str(image.shape)) # show original size
 
 size = input("input size: ").split(" ")
-image = cv2.blur(image,(60,60))
+image = cv2.blur(image,(80,80))
 image = cv2.resize(image,(int(size[0]),int(size[1]))) # resize image
 imageb = cv2.resize(imageb,(int(size[0]),int(size[1]))) # resize image
 # cv2.imwrite("a.png",image)
