@@ -97,11 +97,16 @@
         </div>
     </body>
 </html>
+
 <script src="field/field.js"></script>
 <script src="texture/field_blocks.js"></script>
+<script src="texture/object_textures.js"></script>
+
 <script>
 
-    texture = field_blocks;
+    let texture = {}
+    Object.assign(texture,field_blocks)
+    Object.assign(texture,object_textures)
 
     setTimeout(move,10,50);
     setTimeout(mkimg,10);
@@ -227,7 +232,7 @@
         x = Math.floor(camera[0][0]);
         y = Math.floor(camera[0][1]);
         z = cut_field[y][x];
-        camera[0][2] = z + 1.25;
+        camera[0][2] = z + 1.6/1.28;
         global_camera_pos = [camera[0][0]+cut_field_pos[0]-field_margin[0],camera[0][1]+cut_field_pos[1]-field_margin[1],camera[0][2].toString().substring(0,5)];
     }
 
