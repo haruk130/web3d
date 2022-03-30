@@ -334,9 +334,9 @@
 
         document.getElementById("show_pos").innerHTML = ([(global_camera_pos[0]*0.64).toString().substring(0,5)+"m",(global_camera_pos[1]*0.64).toString().substring(0,5)+"m",(global_camera_pos[2]*0.64).toString().substring(0,5)+"m"]);
         //document.getElementById("block_pos").innerHTML = ([(global_camera_pos[0]).toString().substring(0,5),(global_camera_pos[1]).toString().substring(0,5),(global_camera_pos[2]).toString().substring(0,5)]);
-        nowTime = (Date.now() - startTime) / 1000;
+        fps = (Date.now() - startTime) / 1000;
         startTime = Date.now();
-        document.getElementById("show_fps").innerHTML = ((1/nowTime).toString()).substring(0,5);
+        document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
         setTimeout(mkimg,100);
     }
 

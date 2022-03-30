@@ -1,0 +1,38 @@
+<!-- 参考: https://qiita.com/mink0212/items/d5947ec0d619d6d74eb2 -->
+<!DOCTYPE html>
+<body>
+  <img id="img">
+</body>
+<script>
+
+var asm
+var importObject = {
+  env: {
+    __memory_base: 0,
+    __table_base: 0,
+    print: function (a) { console.log(a) },
+  },
+}
+WebAssembly.instantiateStreaming(fetch('arrtest.wasm'),importObject).then(function(obj){asm=obj.instance.exports;main();});
+
+function main() {
+    console.log(asm.main());
+
+    memory = asm.memory
+    
+    x=1920;
+    y=1080;
+    asm.img(memory.buffer,x,y);
+    iarr = new Uint8ClampedArray(memory.buffer,0,x*y*4);
+    startTime = Date.now();
+    console.log(iarr)
+    let canvasOutput = document.createElement("canvas");
+    canvasOutput.height = y;canvasOutput.width = x;
+    canvasOutput.getContext('2d').putImageData(new ImageData(iarr, x, y), 0, 0);
+    document.getElementById("img").src = canvasOutput.toDataURL('image/png');
+    fps = (Date.now() - startTime) / 1000;
+    console.log(fps)
+
+}
+
+</script>
