@@ -276,7 +276,7 @@
     //     Sy = display_resolution[1];
     //     Va = view_angle;
     //     // 1
-    //     th = Math.atan(Math.abs(x_)/y_)*180/Math.PI
+    //     th = Math.atan2(Math.abs(x_),y_)*180/Math.PI
     //     if (x_>=0) {Ph=th}
     //     else {Ph=360-th}
     //     // 2
@@ -285,10 +285,8 @@
     //     if (CPh<180) {Ax=CPh}
     //     else {Ax=360-CPh}
     //     // 4
-    //     tv = Math.atan(Math.abs(x_)/Math.abs(z_))*180/Math.PI
-    //     if (x_>=0&y_>=0) {Pv=tv}
-    //     else if (x_<-0&y_>=0) {Pv=180-tv}
-    //     else if (x_<0&y_<0) {Pv=180+tv}
+    //     tv = Math.atan2(Math.abs(x_),z_)*180/Math.PI
+    //     if (x_>=0) {Pv=tv}
     //     else {Pv=360-tv}
     //     // 5
     //     CPv = (360+Pv-Cv)%360
@@ -296,8 +294,8 @@
     //     if (CPv<180) {Ay=CPv}
     //     else {Ay=360-CPv}
     //     // 7
-    //     s = 1.5
-    //     s = Sx/Va
+    //     s = 7
+    //     //s = Sx/Va
     //     d = [Ax*s+Sx/2,Ay*s+Sy/2]
     //     return [Math.floor(d[0]),Math.floor(d[1])];
     // }

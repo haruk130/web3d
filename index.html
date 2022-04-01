@@ -203,8 +203,7 @@
     }
 
     function arrange_deg(x) {
-        _d = (x)%360;
-        if (_d<0) {_d = 360 + _d};
+        _d = (x+360)%360;
         return _d;
     }
     
@@ -255,13 +254,12 @@
         Sy = display_resolution[1];
         let p1 = [pos[0]-camera[0][0],pos[1]-camera[0][1],pos[2]-camera[0][2]];
         let d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
-        if (p1[0]>=0) {d_ = d_;}
-        else {d_ = 360-d_;};
+        if (p1[0]<0) {d_ = 360-d_;}
         let _d = arrange_deg(camera[1][0]);
-        d1 = 180-arrange_deg(d_+(180-_d));
+        d1 = 180-arrange_deg(d_-_d+180);
         let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
-        d_ = 360+arrange_deg((Math.atan2(r_,p1[2]))*180/Math.PI);
-        let d2 = (360+arrange_deg(camera[1][1])) - d_;
+        d_ = arrange_deg((Math.atan2(r_,p1[2]))*180/Math.PI);
+        let d2 = arrange_deg(camera[1][1]) - d_;
         s = Sx/view_angle
         d = [d1*s+Sx/2,-d2*s+Sy/2]
         return [Math.floor(d[0]),Math.floor(d[1])];
@@ -276,7 +274,7 @@
     //     Sy = display_resolution[1];
     //     Va = view_angle;
     //     // 1
-    //     th = Math.atan(Math.abs(x_)/y_)*180/Math.PI
+    //     th = Math.atan2(Math.abs(x_),y_)*180/Math.PI
     //     if (x_>=0) {Ph=th}
     //     else {Ph=360-th}
     //     // 2
@@ -285,10 +283,8 @@
     //     if (CPh<180) {Ax=CPh}
     //     else {Ax=360-CPh}
     //     // 4
-    //     tv = Math.atan(Math.abs(x_)/Math.abs(z_))*180/Math.PI
-    //     if (x_>=0&y_>=0) {Pv=tv}
-    //     else if (x_<-0&y_>=0) {Pv=180-tv}
-    //     else if (x_<0&y_<0) {Pv=180+tv}
+    //     tv = Math.atan2(Math.abs(x_),z_)*180/Math.PI
+    //     if (x_>=0) {Pv=tv}
     //     else {Pv=360-tv}
     //     // 5
     //     CPv = (360+Pv-Cv)%360
@@ -296,8 +292,8 @@
     //     if (CPv<180) {Ay=CPv}
     //     else {Ay=360-CPv}
     //     // 7
-    //     s = 1.5
-    //     s = Sx/Va
+    //     s = 7
+    //     //s = Sx/Va
     //     d = [Ax*s+Sx/2,Ay*s+Sy/2]
     //     return [Math.floor(d[0]),Math.floor(d[1])];
     // }
