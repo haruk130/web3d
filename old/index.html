@@ -251,7 +251,7 @@
 
     function pos_3t2d(pos) { // get angle of camera and point
         let p1 = [pos[0]-camera[0][0],pos[1]-camera[0][1],pos[2]-camera[0][2]];
-        let d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
+        d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
         if (p1[0]<0) {d_=360-d_;};
         let d1 = 180-arrange_deg(d_-camera[1][0]+180);
         let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
@@ -350,17 +350,14 @@
         }
     };
     function inclusion(p1, carr) {
-        a = [carr[0][0]-p1[0],carr[0][1]-p1[1]]
-        b = [carr[1][0]-p1[0],carr[1][1]-p1[1]]
-        c = [carr[2][0]-p1[0],carr[2][1]-p1[1]]
-        ab = (a[0]*b[1]-a[1]*b[0])
-        bc = (b[0]*c[1]-b[1]*c[0])
-        ca = (c[0]*a[1]-c[1]*a[0])
+        let a = [carr[0][0]-p1[0],carr[0][1]-p1[1]]
+        let b = [carr[1][0]-p1[0],carr[1][1]-p1[1]]
+        let c = [carr[2][0]-p1[0],carr[2][1]-p1[1]]
+        let ab = (a[0]*b[1]-a[1]*b[0])
+        let bc = (b[0]*c[1]-b[1]*c[0])
+        let ca = (c[0]*a[1]-c[1]*a[0])
         return ab>=0&&bc>=0&&ca>=0
     };
-    function cross(v1, v2) {
-        return (v1[0] * v2[1] - v1[1] * v2[0]);
-    }
 
     function mkimg() {
 
