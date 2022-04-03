@@ -157,7 +157,7 @@
 
     let global_camera_pos;
 
-    let cut_field_size = [500,500];
+    let cut_field_size = [300,300];
     let cut_field_pos = [cut_field_size[0]/2,cut_field_size[1]/2];
     let field_margin = cut_field_size;
     let max_range = 200; // 最大の描画範囲
@@ -166,7 +166,7 @@
     let view_angle = 65; // 視野角
     let camera = [
         [field_margin[0]/2,field_margin[1]/2,10], // 座標 [x,y,z]
-        [180-45,90] // 向き [hrizontal,vertical] (degree)
+        [180-45,0] // 向き [hrizontal,vertical] (degree)
     ];
 
     var startTime = Date.now();
@@ -250,20 +250,19 @@
     }
 
     function pos_3t2d(pos) { // get angle of camera and point
-        Sx = display_resolution[0];
-        Sy = display_resolution[1];
         let p1 = [pos[0]-camera[0][0],pos[1]-camera[0][1],pos[2]-camera[0][2]];
         let d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
-        if (p1[0]<0) {d_ = 360-d_;}
-        let _d = arrange_deg(camera[1][0]);
-        d1 = 180-arrange_deg(d_-_d+180);
+        if (p1[0]<0) {d_=360-d_;};
+        let d1 = 180-arrange_deg(d_-camera[1][0]+180);
         let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
-        d_ = arrange_deg((Math.atan2(r_,p1[2]))*180/Math.PI);
-        let d2 = arrange_deg(camera[1][1]) - d_;
-        s = Sx/view_angle
-        d = [d1*s+Sx/2,-d2*s+Sy/2]
+        d_ = ((Math.atan2(r_,p1[2]))*180/Math.PI);
+        let d2 = d_ - arrange_deg(-camera[1][1]+90);
+        let s = display_resolution[0]/view_angle;
+        let d = [d1*s+display_resolution[0]/2,d2*s+display_resolution[1]/2];
         return [Math.floor(d[0]),Math.floor(d[1])];
     }
+
+
     // function pos_3t2d(pos) { // get angle of camera and point - new making
     //     x_ = pos[0]-camera[0][0];
     //     y_ = pos[1]-camera[0][1];
@@ -350,6 +349,18 @@
             return false;
         }
     };
+    function inclusion(p1, carr) {
+        a = [carr[0][0]-p1[0],carr[0][1]-p1[1]]
+        b = [carr[1][0]-p1[0],carr[1][1]-p1[1]]
+        c = [carr[2][0]-p1[0],carr[2][1]-p1[1]]
+        ab = (a[0]*b[1]-a[1]*b[0])
+        bc = (b[0]*c[1]-b[1]*c[0])
+        ca = (c[0]*a[1]-c[1]*a[0])
+        return ab>=0&&bc>=0&&ca>=0
+    };
+    function cross(v1, v2) {
+        return (v1[0] * v2[1] - v1[1] * v2[0]);
+    }
 
     function mkimg() {
 
@@ -387,13 +398,13 @@
                 if (len_b_c<(view_range/1)**2 & len_b_c>1) {
                     y_=y+fy;x_=x-fx;
                     rd.push([[x_,y_,f[y][x]],[x_,y_-1,f[y-1][x]],[x_+1,y_-1,f[y-1][x+1]],[b[y][x+1]],[bs,bs],[bs,-bs+bs],[bs+bs,-bs+bs]]);
-                    rd.push([[x_,y_,f[y][x]],[x_+1,y_,f[y][x+1]],[x_+1,y_-1,f[y-1][x+1]],[b[y][x+1]],[bs,bs],[bs+bs,bs],[bs+bs,-bs+bs]]);
+                    rd.push([[x_,y_,f[y][x]],[x_+1,y_-1,f[y-1][x+1]],[x_+1,y_,f[y][x+1]],[b[y][x+1]],[bs,bs],[bs+bs,bs],[bs+bs,-bs+bs]]);
                     rd.push([[x_,y_,f[y][x]],[x_+1,y_,f[y][x+1]],[x_+1,y_+1,f[y+1][x+1]],[b[y+1][x+1]],[bs,bs],[bs+bs,bs],[bs+bs,bs+bs]]);
-                    rd.push([[x_,y_,f[y][x]],[x_,y_+1,f[y+1][x]],[x_+1,y_+1,f[y+1][x+1]],[b[y+1][x+1]],[bs,bs],[bs,bs+bs],[bs+bs,bs+bs]]);
+                    rd.push([[x_,y_,f[y][x]],[x_+1,y_+1,f[y+1][x+1]],[x_,y_+1,f[y+1][x]],[b[y+1][x+1]],[bs,bs],[bs+bs,bs+bs],[bs,bs+bs]]);//
                     rd.push([[x_,y_,f[y][x]],[x_,y_+1,f[y+1][x]],[x_-1,y_+1,f[y+1][x-1]],[b[y+1][x]],[bs,bs],[bs,bs+bs],[-bs+bs,bs+bs]]);
-                    rd.push([[x_,y_,f[y][x]],[x_-1,y_,f[y][x-1]],[x_-1,y_+1,f[y+1][x-1]],[b[y+1][x]],[bs,bs],[-bs+bs,bs],[-bs+bs,bs+bs]]);
-                    rd.push([[x_,y_,f[y][x]],[x_-1,y_-1,f[y-1][x-1]],[x_-1,y_,f[y][x-1]],[b[y][x]],[bs,bs],[-bs+bs,-bs+bs],[-bs+bs,bs]]);
-                    rd.push([[x_,y_,f[y][x]],[x_-1,y_-1,f[y-1][x-1]],[x_,y_-1,f[y-1][x]],[b[y][x]],[bs,bs],[-bs+bs,-bs+bs],[bs,-bs+bs]]);
+                    rd.push([[x_,y_,f[y][x]],[x_-1,y_+1,f[y+1][x-1]],[x_-1,y_,f[y][x-1]],[b[y+1][x]],[bs,bs],[-bs+bs,bs+bs],[-bs+bs,bs]]);//
+                    rd.push([[x_,y_,f[y][x]],[x_-1,y_,f[y][x-1]],[x_-1,y_-1,f[y-1][x-1]],[b[y][x]],[bs,bs],[-bs+bs,bs],[-bs+bs,-bs+bs]]);//
+                    rd.push([[x_,y_,f[y][x]],[x_-1,y_-1,f[y-1][x-1]],[x_,y_-1,f[y-1][x]],[b[y][x]],[bs,bs],[bs,-bs+bs],[-bs+bs,-bs+bs]]);//
                 }
             }
         }
@@ -423,9 +434,9 @@
 
     function minimap(ctx) {
         let slide= [15,15]; // slide
-        let mappsize = [200,200]; // size of minimap
-        let pimm= [0,60]; // position in mini map
-        let cpimm= [slide[0]+50,slide[1]+50]; // compass position in mini map
+        let mappsize = [128,128]; // size of minimap
+        let pimm= [0,32]; // position in mini map
+        let cpimm= [slide[0]+25,slide[1]+25]; // compass position in mini map
         ctx.fillStyle = "rgb(250,255,255)";
         ctx.beginPath();
         ctx.fill();
@@ -444,12 +455,16 @@
         ctx.putImageData(new ImageData(iarr,mappsize[0],mappsize[1]),slide[0],slide[1]);
 
         { // compass
-            ctx.fillStyle = "rgb(20,10,20)"
+            ctx.fillStyle = "rgb(250,250,250)"
             ctx.beginPath();
-            ctx.arc(cpimm[0], cpimm[1], 40, 0, 2 * Math.PI);
+            ctx.arc(cpimm[0], cpimm[1], 20.1, 0, 2 * Math.PI);
             ctx.fill();
-            ctx.lineWidth = 7;
-            los = rotate2d([0,35],camera[1][0]);
+            ctx.fillStyle = "rgb(30,30,30)"
+            ctx.beginPath();
+            ctx.arc(cpimm[0], cpimm[1], 20, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.lineWidth = 4;
+            los = rotate2d([0,16],camera[1][0]);
             ctx.strokeStyle = "rgb(255,100,110)";
             ctx.beginPath();
             ctx.moveTo(los[0]+cpimm[0], los[1]+cpimm[1]);
@@ -589,8 +604,8 @@ document.onkeyup = function(e) {
 
 let keyd = {}
 {
-    keyd[87] = ()=>move(3);
-    keyd[83] = ()=>move(-3);
+    keyd[87] = ()=>move(1);
+    keyd[83] = ()=>move(-1);
     keyd[65] = ()=>camera[1][0]+=3;
     keyd[68] = ()=>camera[1][0]-=3;
     keyd[82] = ()=>camera[1][1]+=3;
@@ -598,12 +613,12 @@ let keyd = {}
 }
 let keyw = {}
 {
-    keyw[87] = ()=>move(1);
-    keyw[83] = ()=>move(-1);
-    keyw[65] = ()=>camera[1][0]+=6;
-    keyw[68] = ()=>camera[1][0]-=6;
-    keyw[82] = ()=>camera[1][1]+=6;
-    keyw[70] = ()=>camera[1][1]-=6;
+    keyw[87] = ()=>move(0.5);
+    keyw[83] = ()=>move(-0.5);
+    keyw[65] = ()=>camera[1][0]+=3;
+    keyw[68] = ()=>camera[1][0]-=3;
+    keyw[82] = ()=>camera[1][1]+=3;
+    keyw[70] = ()=>camera[1][1]-=3;
 }
 let keystatus_d = {};
 
