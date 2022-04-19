@@ -121,13 +121,13 @@
     let backcolor = [100,150,200] // [r,g,b]
 
     let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
-        "VGA": [640,480,4,3,9],
+        "VGA": [640,480,4,3,10],
         "SVGA": [800,600,4,3,12],
-        "XGA": [1024,768,4,3,15],
-        "HD": [1280,720,16,9,18],
-        "UXGA": [1600,1200,4,3,23],
-        "FHD": [1980,1020,16,9,28],
-        "4K": [3840,2160,16,9,54],
+        "XGA": [1024,768,4,3,16],
+        "HD": [1280,720,16,9,20],
+        "UXGA": [1600,1200,4,3,24],
+        "FHD": [1980,1020,16,9,30],
+        "4K": [3840,2160,16,9,58],
     };
     let display_resolution;
 
@@ -282,11 +282,8 @@
         let d = [-p1[0]*l*s+display_resolution[0]/2,-p1[2]*l*s+display_resolution[1]/2];
         return [Math.floor(d[0]),Math.floor(d[1])];
     }
-    function dot(v1, v2) {//ベクトル内積
-    return (v1[0] * v2[0] + v1[1] * v2[1]);
-  }
-  
-  function pos_3t2d(pos) { // get angle of camera and point
+    
+    function pos_3t2d(pos) { // get angle of camera and point
         let cp = camera[0];ca = camera[1];
         p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
 
@@ -298,24 +295,54 @@
         let d1 = 180-arrange_deg(d_+180);
         let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
         let d2 = ((Math.atan2(r_,p1[2]))*180/Math.PI) - 90;
-        let s = display_resolution[0]/view_angle;
+        
+        let s = display_resolution[4];
         let d = [d1*s+display_resolution[0]/2,d2*s+display_resolution[1]/2];
         return [Math.floor(d[0]),Math.floor(d[1])];
     }
     
-    function rotate3d(pos,r_x,r_y,r_z) {
-        _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
-        r_x = r_x *(Math.PI/180);
-        r_y = r_y *(Math.PI/180);
-        r_z = r_z *(Math.PI/180);
-        _y2 = _y1*Math.cos(r_x)-_z1*Math.sin(r_x);
-        _z1 = _y1*Math.sin(r_x)+_z1*Math.cos(r_x);
-        _x2 = _x1*Math.cos(r_y)+_z1*Math.sin(r_y);
-        _z3 = -_x1*Math.sin(r_y)+_z1*Math.cos(r_y);
-        _x3 = _x2*Math.cos(r_z)-_y2*Math.sin(r_z);
-        _y3 = _x2*Math.sin(r_z)+_y2*Math.cos(r_z);
-        return [_x3,_y3,_z3];
+    
+//   function pos_3t2d(pos) { // get angle of camera and point
+//         let cp = camera[0];ca = camera[1];
+//         let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
+
+//         p1 = rotate3d_z(p1,ca[0])
+//         p1 = rotate3d_x(p1,-ca[1])
+
+//         let param = [
+//             [5,0,0],
+//             [0,5,0],
+//             [0,0,1],
+//         ]
+//         td = dot(param,[[p1[0]],[p1[1]],[p1[2]]])
+//         let d1 = td[0][0]
+//         let d2 = td[1][0]
+
+//         let s = display_resolution[0]/view_angle;
+//         s = 0.5;
+//         d = [d1*s+display_resolution[0]/2,d2*s+display_resolution[1]/2];
+//         return [Math.floor(d[0]),Math.floor(d[1])];
+//     }
+
+    function dot(matrix1, matrix2){ // https://qiita.com/rubyfmzk_/items/beaa0b324b4e74de96f5
+        var res = [];
+        var row1 = matrix1.length;
+        var row2 = matrix2.length;
+        var col1 = matrix1[0].length;
+        var col2 = matrix2[0].length;
+        for(var i1 = 0; i1 < row1; i1++){
+            res.push([]);
+            for(var i2 = 0; i2 < col2; i2++){
+            res[i1].push(0);
+            for(var i3 = 0; i3 < col1; i3++){
+                res[i1][i2] += matrix1[i1][i3] * matrix2[i3][i2];
+            }
+            }
+        }
+        return res;
     }
+  
+    
     function rotate3d_x(pos,r_x) {
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         r_x = r_x *(Math.PI/180);
@@ -332,43 +359,6 @@
         _y3 = _x1*Math.sin(r_z)+_y1*Math.cos(r_z);
         return [_x3,_y3,_z3];
     }
-
-
-
-
-    // function pos_3t2d(pos) { // get angle of camera and point - new making
-    //     x_ = pos[0]-camera[0][0];
-    //     y_ = pos[1]-camera[0][1];
-    //     z_ = pos[2]-camera[0][2];
-    //     Ch = camera[1][0]%360;
-    //     Cv = camera[1][1]%360;
-    //     Sx = display_resolution[0];
-    //     Sy = display_resolution[1];
-    //     Va = view_angle;
-    //     // 1
-    //     th = Math.atan2(Math.abs(x_),y_)*180/Math.PI
-    //     if (x_>=0) {Ph=th}
-    //     else {Ph=360-th}
-    //     // 2
-    //     CPh = (360+Ph-Ch)%360
-    //     // 3
-    //     if (CPh<180) {Ax=CPh}
-    //     else {Ax=360-CPh}
-    //     // 4
-    //     tv = Math.atan2(Math.abs(x_),z_)*180/Math.PI
-    //     if (x_>=0) {Pv=tv}
-    //     else {Pv=360-tv}
-    //     // 5
-    //     CPv = (360+Pv-Cv)%360
-    //     // 6
-    //     if (CPv<180) {Ay=CPv}
-    //     else {Ay=360-CPv}
-    //     // 7
-    //     s = 7
-    //     //s = Sx/Va
-    //     d = [Ax*s+Sx/2,Ay*s+Sy/2]
-    //     return [Math.floor(d[0]),Math.floor(d[1])];
-    // }
 
     function rotate3d(pos,r_x,r_y,r_z) {
         _x1 = pos[0];_y = pos[1];_z = pos[2];
