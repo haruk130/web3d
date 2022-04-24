@@ -43,8 +43,9 @@
 <script>
 
 let cam_property = [
-    [3,2,3],//camera position [x,y,z] (block)
+    [3,2,1],//camera position [x,y,z] (block)
     [-130,0,90],//camera angle [h,v,scale] (degree)
+    [10,10],
     [500,500],//display
 ]
 var startTime = Date.now();
@@ -71,8 +72,8 @@ polygons = cube[1]
 mkimg()
 
     function mkimg() {
-        x = cam_property[2][0]
-        y = cam_property[2][1]
+        x = cam_property[3][0]
+        y = cam_property[3][1]
         let co = document.createElement("canvas");
         co.height=y;co.width=x;
         ctx = co.getContext('2d');
@@ -87,14 +88,14 @@ mkimg()
             }
         }
         for (i=0;i<polygons.length;i++) {
-            t = polygons[i]
-            p1 = pos_3t2d(t[0])
-            p2 = pos_3t2d(t[1])
-            p3 = pos_3t2d(t[2])
+            t = polygons[i];
+            p1 = pos_3t2d(t[0]);
+            p2 = pos_3t2d(t[1]);
+            p3 = pos_3t2d(t[2]);
             dp = [p1,p2,p3];
-            v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]]
-            v23 = [t[2][0]-t[1][0],t[2][1]-t[1][1],t[2][2]-t[1][2]]
-            vt = vc(v12,v23)//法線
+            v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
+            v23 = [t[2][0]-t[1][0],t[2][1]-t[1][1],t[2][2]-t[1][2]];
+            vt = vc(v12,v23); //法線
 
             // xmax = Math.max(dp[0][0],dp[1][0],dp[2][0]);
             // xmin = Math.min(dp[0][0],dp[1][0],dp[2][0]);
@@ -102,9 +103,9 @@ mkimg()
             // ymin = Math.min(dp[0][1],dp[1][1],dp[2][1]);
             
 
-            xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[2][0]);
+            xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
             xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
-            ymax = Math.min(Math.max(dp[0][1],dp[1][1],dp[2][1]),cam_property[2][0]);
+            ymax = Math.min(Math.max(dp[0][1],dp[1][1],dp[2][1]),cam_property[3][0]);
             ymin = Math.max(Math.min(dp[0][1],dp[1][1],dp[2][1]),0);
 
             for (iy = ymin; iy < ymax; iy++) {
@@ -141,94 +142,7 @@ mkimg()
         return ab>=0&&bc>=0&&ca>=0
     };
 
-    function pos_3t2d(pos) { // get angle of camera and point
-        let cp = cam_property[0];let ca = cam_property[1];
-        let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
-        d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
-        if (p1[0]<0) {d_=360-d_;};
-        let d1 = 180-arrange_deg(d_-ca[0]+180);
-        let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
-        d_ = ((Math.atan2(r_,p1[2]))*180/Math.PI);
-        let d2 = 180 - arrange_deg(d_-ca[1]+180);
-        let s = cam_property[2][0]/ca[2];
-        s = 1;
-        let d = [d1*s+cam_property[2][0]/2,d2*s+cam_property[2][1]/2];
-        return [Math.floor(d[0]),Math.floor(d[1])];
-    }
-    function pos_3t2d(pos) { // get angle of camera and point
-        let cp = cam_property[0];let ca = cam_property[1];
-        let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
 
-        d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
-        if (p1[0]<0) {d_=360-d_;};
-        let d1 = 180-arrange_deg(d_-ca[0]+180);
-
-        let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
-        d_ = (Math.atan2(Math.abs(r_),p1[2]))*180/Math.PI;
-        if (true) {d_=360-d_;};
-        let d2 = 180-arrange_deg(d_-ca[1]+180);
-
-        let s = cam_property[2][0]/ca[2];
-        let d = [d1*s+cam_property[2][0]/2,d2*s+cam_property[2][1]/2];
-        return [Math.floor(d[0]),Math.floor(d[1])];
-    }
-    function pos_3t2d(pos) { // get angle of camera and point
-        let cp = cam_property[0];let ca = cam_property[1];
-        let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
-
-        d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
-        if (p1[0]<0) {d_=360-d_;};
-        let d1 = 180-arrange_deg(d_-ca[0]+180);
-
-        let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
-        d_ = (Math.atan2(Math.abs(r_),p1[2]))*180/Math.PI;
-        if (true) {d_=360-d_;};
-        let d2 = 180-arrange_deg(d_-ca[1]+180+90);
-
-        let s = cam_property[2][0]/ca[2];
-        let d = [d1*s+cam_property[2][0]/2,d2*s+cam_property[2][1]/2];
-        return [Math.floor(d[0]),Math.floor(d[1])];
-    }
-
-
-    function pos_3t2d(pos) { // get angle of camera and point
-        let cp = cam_property[0];let ca = cam_property[1];
-        let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
-
-        p1 = rotate3d_z(p1,ca[0])
-        p1 = rotate3d_x(p1,-ca[1])
-
-        d_ = (Math.atan2(Math.abs(p1[0]),p1[1]))*180/Math.PI;
-        if (p1[0]<0) {d_=360-d_;};
-        let d1 = 180-arrange_deg(d_+180);
-        let r_ = Math.sqrt(p1[0]**2+p1[1]**2);
-        let d2 = ((Math.atan2(r_,p1[2]))*180/Math.PI) - 90;
-
-        let s = cam_property[2][0]/ca[2];
-        let d = [d1*s+cam_property[2][0]/2,d2*s+cam_property[2][1]/2];
-        return [Math.floor(d[0]),Math.floor(d[1])];
-    }
-    function pos_3t2d(pos) { // get angle of camera and point
-        let cp = cam_property[0];let ca = cam_property[1];
-        let p1 = [pos[0]-cp[0],pos[1]-cp[1],-(pos[2]-cp[2])];
-
-        p1 = rotate3d_z(p1,ca[0])
-        p1 = rotate3d_x(p1,-ca[1]+90)
-
-        let param = [
-            [10,0,0],
-            [0,10,0],
-            [0,0,1],
-        ]
-        td = dot(param,[[p1[0]],[p1[1]],[p1[2]]])
-        let d1 = td[0][0]
-        let d2 = td[1][0]
-
-        let s = cam_property[2][0]/ca[2];
-        s = 1
-        let d = [-d1*s+cam_property[2][0]/2,-d2*s+cam_property[2][1]/2];
-        return [Math.floor(d[0]),Math.floor(d[1])];
-    }
     function pos_3t2d(pos) { // get angle of camera and point
         let cp = cam_property[0];let ca = cam_property[1];
         let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
@@ -236,9 +150,9 @@ mkimg()
         p1 = rotate3d_x(p1,-ca[1])
         l = Math.abs(14/(p1[1]))
         
-        let s = cam_property[2][0]/2;
+        let s = cam_property[3][0]/2;
         s = 20;
-        let d = [-p1[0]*l*s+cam_property[2][0]/2,-p1[2]*l*s+cam_property[2][1]/2];
+        let d = [-p1[0]*l*s+cam_property[3][0]/2,-p1[2]*l*s+cam_property[3][1]/2];
         return [Math.floor(d[0]),Math.floor(d[1])];
     }
 
@@ -339,8 +253,8 @@ setInterval(keyinput,100)
 
 // resize window
     function resizeImg() {
-        dw = cam_property[2][0];
-        dh = cam_property[2][1];
+        dw = cam_property[3][0];
+        dh = cam_property[3][1];
         let bottom_area = 17;
         let ww = window.innerWidth;
         let rw = 0;let rh = 0;let vm = 1;let hm = 1;
