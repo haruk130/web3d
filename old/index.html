@@ -162,8 +162,8 @@
     let field_margin = cut_field_size;
     let max_range = 200; // 最大の描画範囲
     let min_range = 60; // 最小の描画範囲
-    let view_range = 80; // 標準の描画範囲
-    let view_angle = 65; // 視野角
+    let view_range = 70; // 標準の描画範囲
+    let view_angle = 70; // 視野角
     let camera = [
         [field_margin[0]/2,field_margin[1]/2,10], // 座標 [x,y,z]
         [180-45,0] // 向き [hrizontal,vertical] (degree)
@@ -301,17 +301,29 @@
         return [Math.floor(d[0]),Math.floor(d[1])];
     }
     
+    function pos_3t2d(pos) { // get angle of camera and point
+        let cp = camera[0];ca = camera[1];
+        p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
+        p1 = rotate3d_z(p1,ca[0])
+        p1 = rotate3d_x(p1,-ca[1])
+        l = Math.abs(14/(p1[1]))
+        let s = display_resolution[0]/ca[2];
+        s = 20;
+        let d = [-p1[0]*l*s+display_resolution[0]/2,-p1[2]*l*s+display_resolution[1]/2];
+        return [Math.floor(d[0]),Math.floor(d[1])];
+    }
+    
     
 //   function pos_3t2d(pos) { // get angle of camera and point
 //         let cp = camera[0];ca = camera[1];
-//         let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
+//         let p1 = [pos[0]-cp[0],pos[1]-cp[1],-(pos[2]-cp[2])];
 
 //         p1 = rotate3d_z(p1,ca[0])
-//         p1 = rotate3d_x(p1,-ca[1])
+//         p1 = rotate3d_x(p1,-ca[1]+70)
 
 //         let param = [
-//             [5,0,0],
-//             [0,5,0],
+//             [10,0,0],
+//             [0,10,0],
 //             [0,0,1],
 //         ]
 //         td = dot(param,[[p1[0]],[p1[1]],[p1[2]]])
@@ -319,8 +331,8 @@
 //         let d2 = td[1][0]
 
 //         let s = display_resolution[0]/view_angle;
-//         s = 0.5;
-//         d = [d1*s+display_resolution[0]/2,d2*s+display_resolution[1]/2];
+//         s = 0.5
+//         d = [-d1*s+display_resolution[0]/2,-d2*s+display_resolution[1]];
 //         return [Math.floor(d[0]),Math.floor(d[1])];
 //     }
 
@@ -468,15 +480,6 @@
                 }
             }
         }
-        // for (i=0;i<rd.length;i++) {
-        //     p = rd[i]
-        //     a = [p[1][0]-p[0][0],p[1][1]-p[0][1],p[1][2]-p[0][2]]
-        //     b = [p[2][0]-p[0][0],p[2][1]-p[0][1],p[2][2]-p[0][2]]
-        //     ab = [a[0]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]
-        //     lenab = length2d([ab,[0,0,0]])
-        //     //rd[i].push([ab[0],ab[1],ab[2]])
-        //     rd[i].push([ab[0]/lenab,ab[1]/lenab,ab[2]/lenab])
-        // }
         return rd;
     }
     function add_objects(fp,object) {
@@ -601,11 +604,18 @@
         for (i=0;i<tmpal;i++) {
             p = ps[tmpa[i][1]];
             let p1 = pos_3t2d(p[0]);let p2 = pos_3t2d(p[1]);let p3 = pos_3t2d(p[2]);
-            // if (Math.abs(p1[0])>lookrange) {
-            //     if (Math.abs(p2[0])>lookrange) {
-            //         if (Math.abs(p3[0])>lookrange) { f = false; }
-            //     }
-            // }
+
+
+            if (p1[1]>display_resolution[1]) {
+                if (p1[1]>display_resolution[1]) {   
+                    if (p1[1]>display_resolution[1]) {
+                        continue
+                    }
+                }
+            }
+
+
+
             dpos = [p1,p2,p3];
             xmax = Math.max(dpos[0][0],dpos[1][0],dpos[2][0]);
             xmin = Math.min(dpos[0][0],dpos[1][0],dpos[2][0]);
