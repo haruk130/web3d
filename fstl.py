@@ -1,3 +1,4 @@
+from numpy import double
 from scipy.misc import face
 
 
@@ -15,9 +16,9 @@ for l in data:
     if (l.startswith("vertex")):
         c+=1
         ld = l.replace("\n","").split(" ")
-        lfctl.append(ld[1])
-        lfctl.append(ld[2])
-        lfctl.append(ld[3])
+        lfctl.append(str(double(ld[1])))
+        lfctl.append(str(double(ld[2])))
+        lfctl.append(str(double(ld[3])))
         if (c%3==0):
             fctl.append(lfctl)
             # print(lfctl)
