@@ -1,11 +1,17 @@
 from numpy import double
 from scipy.misc import face
 
+# 150000000000m = 150000000km = 1au
+# 1000 = 1km
 
+# 150000 = 1au
 paths = [
-    ["./whatisthis.stl",[230,160,50],[0,0,0]],
+    ["./sun.stl",[255,70,50],[0,0,0]],
+    ["./mercury.stl",[200,200,210],[5791,0,0]],
+    ["./venus.stl",[220,200,150],[10820,0,0]],
+    ["./earth.stl",[20,200,250],[149597,0,0]],
+   # ["./saturn.stl",[230,160,50],[0,0,0]],
 ]
-
 
 lt = "cube = "
 lt += "[ [0],"

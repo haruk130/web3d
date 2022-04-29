@@ -87,7 +87,7 @@
 <script>
 
 let cam_property = [
-    [4,4,1],//camera position [x,y,z] (block)
+    [149797,200,6],//camera position [x,y,z] (block)
     [-130,0,90],//camera angle [h,v,scale] (degree)
     [10,10],
     [640,480],//display
@@ -163,7 +163,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v23 = [t[2][0]-t[1][0],t[2][1]-t[1][1],t[2][2]-t[1][2]];
             vt = VNormalized(VOProduct(v12,v23)); //法線
-            vl = VNormalized([10,0,0]);
+            vl = VNormalized([10,-10,5]);
             normal = VIProduct(vl,vt); // 0<=normal<=1
             light = normal*0.5+0.7;
             
@@ -269,7 +269,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         p1 = rotate3d_z(p1,ca[0]);
         p1 = rotate3d_x(p1,-ca[1]);
         let l = Math.abs(14/(p1[1]));
-        let s = cam_property[3][0]/20;
+        let s = cam_property[3][0]/10;
         let d = [p1[0]*l*s+cam_property[3][0]/2,-p1[2]*l*s+cam_property[3][1]/2];
         let infront = false;
         if (p1[1]<0) {infront = true };
