@@ -87,7 +87,7 @@
 <script>
 
 let cam_property = [
-    [3,2,1],//camera position [x,y,z] (block)
+    [3,3,1],//camera position [x,y,z] (block)
     [-130,0,90],//camera angle [h,v,scale] (degree)
     [10,10],
     [640,480],//display
@@ -123,6 +123,8 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         };
     }
 
+    let obj = cube[1]
+
 
     setTimeout(mkimg,10);
     function mkimg() {
@@ -139,7 +141,9 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             iarr[index+2] = 100; // Blue
             iarr[index+3] = 255; // Alpha
         }
-        polygons = cube[1];
+        obj = addLen(obj);
+        obj = sortP(obj);
+        polygons = obj;
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
@@ -149,7 +153,13 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
 
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v23 = [t[2][0]-t[1][0],t[2][1]-t[1][1],t[2][2]-t[1][2]];
-            vt = vc(v12,v23); //法線
+            vt = VNormalized(VOProduct(v12,v23)); //法線
+            vl = VNormalized([1,0,0])
+            normal = VIProduct(vl,vt)
+            c = 255*normal*1;
+            if (c<0&&c>=255) {
+                console.log(c)
+            }
             
             xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
             xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
@@ -161,7 +171,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
                     if (iy>0 && ix>0 && ix<x && iy<y) {// in display
                         if (inclusion([ix,iy],dp)) {
                             index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                            iarr[index+0] = 200;
+                            iarr[index+0] = c;
                             iarr[index+1] = 200;
                             iarr[index+2] = 200;
                         }
@@ -176,11 +186,67 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
         setTimeout(mkimg,10);
     }
-    function vc(a,b) {
-        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[0]*b[0]]
+
+
+    function sortP(ps) {
+        
+        psl = ps.length;
+        let sorted = false;
+        // sort polygon to length
+        let bu;let i=0;
+        while (i<psl) {
+            j=0;jm = psl-i-1;
+            while (j<jm) {
+                if (ps[j][7]<ps[j+1][7]) {
+                    bu = ps[j+1];
+                    ps[j+1] = ps[j];
+                    ps[j] = bu;
+                    sorted = true;
+                }
+                j=(j+1);
+            }
+            if (!sorted) {
+                break
+            }
+            i=(i+1);
+        }
+        return ps
+    }
+    
+    function addLen(ps) {
+        for (let i=0;i<ps.length;i++) {
+            ps[i][7] = squared_length3d([[0,0,0],gcot([ps[i][0],ps[i][1],ps[i][2]])])
+        }
+        return ps
+    }
+    function gcot(t3ds) { // 三角形の代表座標
+        return [t3ds[0][0]+t3ds[1][0]+t3ds[2][0],t3ds[0][1]+t3ds[1][1]+t3ds[2][1],t3ds[0][2]+t3ds[1][2]+t3ds[2][2]]
     }
 
-    function inclusion(p1, carr) {
+    
+    function squared_length3d(pos) {
+        return (pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2+(pos[0][2]-pos[1][2])**2;
+    }
+    function length3d(pos) {
+        return Math.sqrt((pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2+(pos[0][2]-pos[1][2])**2);
+    }
+
+    function VOProduct(a,b) { // ベクトルの外積
+        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[0]*b[0]]
+    }
+    function VIProduct(a,b) { // ベクトルの内積
+        return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    }
+    function VMM3(a) { // ベクトルのマイナス1倍
+        return [-a[0],-a[1],-a[2]];
+    }
+
+    function VNormalized(a) { // ベクトルの正規化
+        l = length3d([[0,0,0],a])
+        return [a[0]/l,a[1]/l,a[2]/l]
+    }
+
+    function inclusion(p1, carr) { // 三角形の内外判定
         let a = [carr[0][0]-p1[0],carr[0][1]-p1[1]]
         let b = [carr[1][0]-p1[0],carr[1][1]-p1[1]]
         let c = [carr[2][0]-p1[0],carr[2][1]-p1[1]]
@@ -189,7 +255,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         let ca = (c[0]*a[1]-c[1]*a[0])
         return ab>=0&&bc>=0&&ca>=0
     };
-
 
     function pos_3t2d(pos) { // get angle of camera and point
         let cp = cam_property[0];let ca = cam_property[1];
@@ -204,7 +269,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         return [Math.floor(d[0]),Math.floor(d[1]),ifront];
     }
 
-    function rotate3d_x(pos,r_x) {
+    function rotate3d_x(pos,r_x) { // x軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         r_x = r_x *(Math.PI/180);
         _x3 = _x1;
@@ -212,7 +277,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         _z3 = _y1*Math.sin(r_x)+_z1*Math.cos(r_x);
         return [_x3,_y3,_z3];
     }
-    function rotate3d_z(pos,r_z) {
+    function rotate3d_z(pos,r_z) { // z軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         r_z = r_z *(Math.PI/180);
         _z3 = _z1;
@@ -220,31 +285,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         _y3 = _x1*Math.sin(r_z)+_y1*Math.cos(r_z);
         return [_x3,_y3,_z3];
     }
-    function dot(matrix1, matrix2){ // https://qiita.com/rubyfmzk_/items/beaa0b324b4e74de96f5
-        var res = [];
-        var row1 = matrix1.length;
-        var row2 = matrix2.length;
-        var col1 = matrix1[0].length;
-        var col2 = matrix2[0].length;
-        for(var i1 = 0; i1 < row1; i1++){
-            res.push([]);
-            for(var i2 = 0; i2 < col2; i2++){
-            res[i1].push(0);
-            for(var i3 = 0; i3 < col1; i3++){
-                res[i1][i2] += matrix1[i1][i3] * matrix2[i3][i2];
-            }
-            }
-        }
-        return res;
-    }
-    
-
-    function arrange_deg(x) {
-        _d = (x+360)%360;
-        return _d;
-    }
-
-    function rotate3d(pos,r_x,r_y,r_z) {
+    function rotate3d(pos,r_x,r_y,r_z) { // 回転
         _x1 = pos[0];_y = pos[1];_z = pos[2];
         r_x = r_x *(Math.PI/180);
         r_y = r_y *(Math.PI/180);

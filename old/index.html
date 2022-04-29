@@ -501,11 +501,11 @@
         tiarr = new Uint8ClampedArray(x * y * 4);
         for (iy = 0; iy < y; iy++) {
             for (ix = 0; ix < x; ix++) {
-                    index = (iy*x+ix)*4; // index of position [ix,iy]
-                    tiarr[index+0] = backcolor[0]; // Red
-                    tiarr[index+1] = backcolor[1]; // Green
-                    tiarr[index+2] = backcolor[2]; // Blue
-                    tiarr[index+3] = 255; // Alpha
+                index = (iy*x+ix)*4; // index of position [ix,iy]
+                tiarr[index+0] = backcolor[0]; // Red
+                tiarr[index+1] = backcolor[1]; // Green
+                tiarr[index+2] = backcolor[2]; // Blue
+                tiarr[index+3] = 255; // Alpha
             }
         }
         s = display_resolution[4];
