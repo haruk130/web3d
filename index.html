@@ -124,24 +124,27 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
 
     let obj = cube[1]
-
+    let cframe = 0;
 
     setTimeout(mkimg,10);
     function mkimg() {
-        x = cam_property[3][0]
-        y = cam_property[3][1]
+        cframe++;
+        x = cam_property[3][0];
+        y = cam_property[3][1];
         let co = document.createElement("canvas");
         co.height=y;co.width=x;
         ctx = co.getContext('2d');
         let iarr = new Uint8ClampedArray(x*y*4);
         for (let i = 0; i < x*y; i++) {
             let index = (i)*4; // index of position [ix,iy]
-            iarr[index+0] = 100; // Red
-            iarr[index+1] = 100; // Green
-            iarr[index+2] = 100; // Blue
+            iarr[index+0] = 10; // Red
+            iarr[index+1] = 10; // Green
+            iarr[index+2] = 10; // Blue
             iarr[index+3] = 255; // Alpha
         }
-        obj = addLen(obj);
+        if (cframe%20==1) {
+            obj = addLen(obj);
+        }
         obj = sortP(obj);
         polygons = obj;
         for (i=1;i<polygons.length;i++) {
@@ -149,29 +152,36 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             p1 = pos_3t2d(t[0]);
             p2 = pos_3t2d(t[1]);
             p3 = pos_3t2d(t[2]);
-            console.log(t[7]<=polygons[i-1][7])
+
+            if (p1[2]&&p2[2]&&p3[2]) {
+                continue;
+            }
+
+            console.log(t[7]<=polygons[i-1][7]);
             dp = [p1,p2,p3];
 
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v23 = [t[2][0]-t[1][0],t[2][1]-t[1][1],t[2][2]-t[1][2]];
             vt = VNormalized(VOProduct(v12,v23)); //法線
-            vl = VNormalized([10,1,10])
-            normal = VIProduct(vl,vt) // 0<=normal<=1
-            light = normal*0.5+0.5;
+            vl = VNormalized([10,0,0]);
+            normal = VIProduct(vl,vt); // 0<=normal<=1
+            light = normal*0.5+0.7;
             
             xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
             xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
             ymax = Math.min(Math.max(dp[0][1],dp[1][1],dp[2][1]),cam_property[3][0]);
             ymin = Math.max(Math.min(dp[0][1],dp[1][1],dp[2][1]),0);
 
-            for (iy = ymin; iy < ymax; iy++) {
-                for (ix = xmin; ix < xmax; ix++) {
-                    if (iy>0 && ix>0 && ix<x && iy<y) {// in display
-                        if (inclusion([ix,iy],dp)) {
-                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                            iarr[index+0] = 255*light;
-                            iarr[index+1] = 255*light;
-                            iarr[index+2] = 255*light;
+            if (t[3][0]==0) {
+                for (iy = ymin; iy < ymax; iy++) {
+                    for (ix = xmin; ix < xmax; ix++) {
+                        if (iy>0 && ix>0 && ix<x && iy<y) {// in display
+                            if (inclusion([ix,iy],dp)) {
+                                index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                                iarr[index+0] = t[4][0]*light;
+                                iarr[index+1] = t[5][0]*light;
+                                iarr[index+2] = t[6][0]*light;
+                            }
                         }
                     }
                 }
@@ -204,7 +214,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
                 j++;
             }
             if (!sorted) {
-                break
+                break;
             }
             i++;
         }
@@ -213,12 +223,12 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     
     function addLen(ps) {
         for (let i=0;i<ps.length;i++) {
-            ps[i][7] = squared_length3d([cam_property[0],gcot([ps[i][0],ps[i][1],ps[i][2]])])
+            ps[i][7] = squared_length3d([cam_property[0],gcot([ps[i][0],ps[i][1],ps[i][2]])]);
         }
         return ps
     }
     function gcot(t3ds) { // 三角形の代表座標
-        return [(t3ds[0][0]+t3ds[1][0]+t3ds[2][0])/3,(t3ds[0][1]+t3ds[1][1]+t3ds[2][1])/3,(t3ds[0][2]+t3ds[1][2]+t3ds[2][2])/3]
+        return [(t3ds[0][0]+t3ds[1][0]+t3ds[2][0])/3,(t3ds[0][1]+t3ds[1][1]+t3ds[2][1])/3,(t3ds[0][2]+t3ds[1][2]+t3ds[2][2])/3];
     }
     
     function squared_length3d(pos) {
@@ -229,7 +239,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
 
     function VOProduct(a,b) { // ベクトルの外積
-        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[0]*b[0]]
+        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[0]*b[0]];
     }
     function VIProduct(a,b) { // ベクトルの内積
         return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
@@ -244,13 +254,13 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
 
     function inclusion(p1, carr) { // 三角形の内外判定
-        let a = [carr[0][0]-p1[0],carr[0][1]-p1[1]]
-        let b = [carr[1][0]-p1[0],carr[1][1]-p1[1]]
-        let c = [carr[2][0]-p1[0],carr[2][1]-p1[1]]
-        let ab = (a[0]*b[1]-a[1]*b[0])
-        let bc = (b[0]*c[1]-b[1]*c[0])
-        let ca = (c[0]*a[1]-c[1]*a[0])
-        return ab<=0&&bc<=0&&ca<=0
+        let a = [carr[0][0]-p1[0],carr[0][1]-p1[1]];
+        let b = [carr[1][0]-p1[0],carr[1][1]-p1[1]];
+        let c = [carr[2][0]-p1[0],carr[2][1]-p1[1]];
+        let ab = a[0]*b[1]-a[1]*b[0];
+        let bc = b[0]*c[1]-b[1]*c[0];
+        let ca = c[0]*a[1]-c[1]*a[0];
+        return ab<=0&&bc<=0&&ca<=0;
     };
 
     function pos_3t2d(pos) { // get angle of camera and point
@@ -261,9 +271,9 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         let l = Math.abs(14/(p1[1]));
         let s = cam_property[3][0]/20;
         let d = [p1[0]*l*s+cam_property[3][0]/2,-p1[2]*l*s+cam_property[3][1]/2];
-        let ifront = true;
-        if (p1[1]<0) {ifront = false }
-        return [Math.floor(d[0]),Math.floor(d[1]),ifront];
+        let infront = false;
+        if (p1[1]<0) {infront = true };
+        return [Math.floor(d[0]),Math.floor(d[1]),infront];
     }
 
     function rotate3d_x(pos,r_x) { // x軸のみの回転
