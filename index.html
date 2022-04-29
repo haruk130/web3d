@@ -87,8 +87,8 @@
 <script>
 
 let cam_property = [
-    [2,5,1],//camera position [x,y,z] (block)
-    [200,0,90],//camera angle [h,v,scale] (degree)
+    [4,4,1],//camera position [x,y,z] (block)
+    [-130,0,90],//camera angle [h,v,scale] (degree)
     [10,10],
     [640,480],//display
 ]
@@ -157,7 +157,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             vt = VNormalized(VOProduct(v12,v23)); //法線
             vl = VNormalized([10,1,10])
             normal = VIProduct(vl,vt) // 0<=normal<=1
-            light = normal*0.2+0.8;
+            light = normal*0.5+0.5;
             
             xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
             xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
