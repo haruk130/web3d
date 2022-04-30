@@ -147,7 +147,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         }
         obj = sortP(obj);
         polygons = obj;
-        for (i=1;i<polygons.length;i++) {
+        for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
             p2 = pos_3t2d(t[1]);
@@ -157,15 +157,14 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
                 continue;
             }
 
-            console.log(t[7]<=polygons[i-1][7]);
             dp = [p1,p2,p3];
 
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
-            v23 = [t[2][0]-t[1][0],t[2][1]-t[1][1],t[2][2]-t[1][2]];
-            vt = VNormalized(VOProduct(v12,v23)); //法線
+            v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
+            vt = VNormalized(VCProduct(v12,v13)); //法線
             vl = VNormalized([1,5,10]);
-            normal = VIProduct(vl,vt); // 0<=normal<=1
-            light = normal*0.5+0.7;
+            normal = VIProduct(vl,(vt)); // 0<=normal<=1
+            light = normal*0.7+0.3;
             
             xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
             xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
@@ -238,9 +237,10 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         return Math.sqrt((pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2+(pos[0][2]-pos[1][2])**2);
     }
 
-    function VOProduct(a,b) { // ベクトルの外積
-        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[0]*b[0]];
+    function VCProduct(a,b) { // Vector-Cross-Product ベクトルの外積
+        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
     }
+
     function VIProduct(a,b) { // ベクトルの内積
         return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
     }
