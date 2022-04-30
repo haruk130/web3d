@@ -142,12 +142,13 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             iarr[index+2] = 10; // Blue
             iarr[index+3] = 255; // Alpha
         }
-        if (cframe%20==1) {
+        if (cframe%30==1) {
             obj = addLen(obj);
+            obj = sortP(obj);
         }
-        obj = sortP(obj);
         polygons = obj;
-        for (i=0;i<polygons.length;i++) {
+        vl = VNormalized([1,1,10]);
+        for (i=1;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
             p2 = pos_3t2d(t[1]);
@@ -162,8 +163,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             vt = VNormalized(VCProduct(v12,v13)); //法線
-            vl = VNormalized([1,5,10]);
-            normal = VIProduct(vl,(vt)); // 0<=normal<=1
+            normal = VIProduct(vl,vt); // 0<=normal<=1
             light = normal*0.7+0.3;
             
             xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
@@ -199,7 +199,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         
         psl = ps.length;
         let sorted = false;
-        // sort polygon to length
         let bu;let i=0;
         while (i<psl) {
             j=0;jm = psl-i-1;
