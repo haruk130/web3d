@@ -6,9 +6,9 @@ from scipy.misc import face
 
 # 150000 = 1au
 paths = [
-#    ["./icosphere.stl",[230,160,50],[0,0,0]],
-    ["./whatisthis.stl",[200,200,200],[0,0,0]],
-    ["./saturn.stl",[230,160,50],[-6,1,-1]],
+    ["./icosphere.stl",[230,160,50],[0,0,0]],
+#    ["./whatisthis.stl",[200,200,200],[0,0,0]],
+#    ["./saturn.stl",[230,160,50],[-6,1,-1]],
 ]
 
 lt = "cube = "
