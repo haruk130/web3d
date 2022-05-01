@@ -87,8 +87,8 @@
 <script>
 
 let cam_property = [
-    [15,15,15],//camera position [x,y,z] (block)
-    [225,-24,10],//camera angle [h,v,scale] (degree)
+    [10,10,1.7],//camera position [x,y,z] (block)
+    [225,0,10],//camera angle [h,v,scale] (degree)
     [10,10],
     [640,480],//display
 ]
@@ -147,7 +147,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             obj = sortP(obj);
         }
         polygons = obj;
-        vl = VNormalized([0,10,10]);
+        vl = VNormalized([-1,15,12]);
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
