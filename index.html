@@ -147,7 +147,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             obj = sortP(obj);
         }
         polygons = obj;
-        vl = VNormalized([-1,15,12]);
+        vl = VNormalized([1,15,50]);
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
@@ -164,7 +164,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             vt = VNormalized(VCProduct(v12,v13)); //法線
             normal = VIProduct(vl,vt); // 0<=normal<=1
-            light = normal*0.7+0.3;
+            light = Math.max(normal,normal*0.1)*0.9+0.3;
             
             xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
             xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
