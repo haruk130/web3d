@@ -100,7 +100,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         "XGA": [1024,768,4,3],
         "HD": [1280,720,16,9],
         "UXGA": [1600,1200,4,3],
-        "FHD": [1980,1020,16,9],
+        "FHD": [1920,1080,16,9],
         "4K": [3840,2160,16,9],
     };
 
@@ -279,16 +279,16 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         r_x = r_x *(Math.PI/180);
         _x3 = _x1;
-        _y3 = _y1*Math.cos(r_x)-_z1*Math.sin(r_x);
-        _z3 = _y1*Math.sin(r_x)+_z1*Math.cos(r_x);
+        _y3 = _y1*cos(r_x)-_z1*sin(r_x);
+        _z3 = _y1*sin(r_x)+_z1*cos(r_x);
         return [_x3,_y3,_z3];
     }
     function rotate3d_z(pos,r_z) { // z軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         r_z = r_z *(Math.PI/180);
         _z3 = _z1;
-        _x3 = _x1*Math.cos(r_z)-_y1*Math.sin(r_z);
-        _y3 = _x1*Math.sin(r_z)+_y1*Math.cos(r_z);
+        _x3 = _x1*cos(r_z)-_y1*sin(r_z);
+        _y3 = _x1*sin(r_z)+_y1*cos(r_z);
         return [_x3,_y3,_z3];
     }
     function rotate3d(pos,r_x,r_y,r_z) { // 回転
@@ -296,19 +296,19 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         r_x = r_x *(Math.PI/180);
         r_y = r_y *(Math.PI/180);
         r_z = r_z *(Math.PI/180);
-        _y2 = _y*Math.cos(r_x)-_z*Math.sin(r_x);
-        _z1 = _y*Math.sin(r_x)+_z*Math.cos(r_x);
-        _x2 = _x1*Math.cos(r_y)+_z1*Math.sin(r_y);
-        _z3 = -_x1*Math.sin(r_y)+_z1*Math.cos(r_y);
-        _x3 = _x2*Math.cos(r_z)-_y2*Math.sin(r_z);
-        _y3 = _x2*Math.sin(r_z)+_y2*Math.cos(r_z);
+        _y2 = _y*cos(r_x)-_z*sin(r_x);
+        _z1 = _y*sin(r_x)+_z*cos(r_x);
+        _x2 = _x1*cos(r_y)+_z1*sin(r_y);
+        _z3 = -_x1*sin(r_y)+_z1*cos(r_y);
+        _x3 = _x2*cos(r_z)-_y2*sin(r_z);
+        _y3 = _x2*sin(r_z)+_y2*cos(r_z);
         return [_x3,_y3,_z3];
     }
     function rotate2d(pos,r) {
         var _x = pos[0];_y = pos[1];
         r = r *(Math.PI/180);
-        var x = _x*Math.cos(r)-_y*Math.sin(r);
-        var y = _x*Math.sin(r)+_y*Math.cos(r);
+        var x = _x*cos(r)-_y*sin(r);
+        var y = _x*sin(r)+_y*cos(r);
         return [x,y];
     }
 
@@ -317,6 +317,70 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         cam_property[0][0] += los[0];
         cam_property[0][1] += los[1];
     }
+
+    function sin(z) {
+        return Math.sin(z);
+    }
+    function cos(z) {
+        return Math.cos(z);
+    }
+    function sin(z) {
+        z = z%(Math.PI*2);
+        let r = 0;
+        let f = 0;
+        for (n=0;n<10;n++) {
+            r += ( (-1)**n/factonal(2*n+1) ) * ( z**(2*n+1) );
+        }
+        return r;
+    }
+    function cos(z) {
+        z = z%(Math.PI*2);
+        let r = 0;
+        for (n=0;n<10;n++) {
+            r += ( (-1)**n/factonal(2*n) ) * ( z**(2*n) );
+        }
+        return r;
+    }
+    function factonal(n) {
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
+
+
+
+//     const memo = [1];
+//     function preCalc(max) {
+//         const prevMax = memo.length;
+//         let cur = memo[prevMax-1];
+//         for (let i = prevMax; i <= max; i++) {
+//             cur /= i;
+//             memo.push(cur);
+//         }
+//     };
+//     function factorialInv(n) {
+//         return memo[n];
+//     }
+//     function sin(z) {
+//         z = z % (Math.PI * 2);
+//         let r = 0;
+//         for (let n = 0; n < 10; n++) {
+//             r += ((-1) ** n) * factorialInv(2 * n + 1) * (z ** (2 * n + 1));
+//         }
+//         return r;
+//     }
+//     function cos(z) {
+//         z = z%(Math.PI*2);
+//         let r = 0;
+//         for (n=0;n<10;n++) {
+//             r += ( (-1)**n*factorialInv(2*n) ) * ( z**(2*n) );
+//         }
+//         return r;
+//     }
+// preCalc(2 * 10 + 1);
+
 
 // keyboard
 document.onkeydown = function(e) {
