@@ -167,26 +167,24 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
 
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
-            vt = VNormalized(VCProduct(v12,v13)); //法線
-            normal = VIProduct(vl,vt); // 0<=normal<=1
-            light = Math.max(normal,normal*0.1)*0.9+0.3;
+            normal = VNormalized(VCProduct(v12,v13)); //法線
+            angl = VIProduct(vl,normal); // 0<=normal<=1
+            light = Math.max(angl,angl*0.1)*0.9+0.3;
             
             xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
             xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
-            ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][0]);
+            ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][1]);
             ymin = Math.max(Math.min(p1[1],p2[1],p3[1]),0);
 
             dp = [p1,p2,p3];
             if (t[3][0]==0) {
                 for (iy = ymin; iy < ymax; iy++) {
                     for (ix = xmin; ix < xmax; ix++) {
-                        if (iy>0 && ix>0 && ix<x && iy<y) {// in display
-                            if (inclusion([ix,iy],dp)) {
-                                index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                                iarr[index+0] = t[4][0]*light;
-                                iarr[index+1] = t[5][0]*light;
-                                iarr[index+2] = t[6][0]*light;
-                            }
+                        if (inclusion([ix,iy],dp)) {
+                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                            iarr[index+0] = t[4][0]*light;
+                            iarr[index+1] = t[5][0]*light;
+                            iarr[index+2] = t[6][0]*light;
                         }
                     }
                 }
