@@ -121,6 +121,9 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
+        drsel.value = "VGA";
+        cam_property[3] = display_list[drsel.value];
+        resizeImg();
         drsel.onchange = event => {
             cam_property[3] = display_list[drsel.value];
             resizeImg();
@@ -162,19 +165,18 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
                 continue;
             }
 
-            dp = [p1,p2,p3];
-
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             vt = VNormalized(VCProduct(v12,v13)); //法線
             normal = VIProduct(vl,vt); // 0<=normal<=1
             light = Math.max(normal,normal*0.1)*0.9+0.3;
             
-            xmax = Math.min(Math.max(dp[0][0],dp[1][0],dp[2][0]),cam_property[3][0]);
-            xmin = Math.max(Math.min(dp[0][0],dp[1][0],dp[2][0]),0);
-            ymax = Math.min(Math.max(dp[0][1],dp[1][1],dp[2][1]),cam_property[3][0]);
-            ymin = Math.max(Math.min(dp[0][1],dp[1][1],dp[2][1]),0);
+            xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
+            xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
+            ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][0]);
+            ymin = Math.max(Math.min(p1[1],p2[1],p3[1]),0);
 
+            dp = [p1,p2,p3];
             if (t[3][0]==0) {
                 for (iy = ymin; iy < ymax; iy++) {
                     for (ix = xmin; ix < xmax; ix++) {
@@ -252,8 +254,8 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
 
     function VNormalized(a) { // ベクトルの正規化
-        l = length3d([[0,0,0],a])
-        return [a[0]/l,a[1]/l,a[2]/l]
+        l = length3d([[0,0,0],a]);
+        return [a[0]/l,a[1]/l,a[2]/l];
     }
 
     function inclusion(p1, carr) { // 三角形の内外判定
