@@ -87,8 +87,8 @@
 <script>
 
 let cam_property = [
-    [10,10,1.7],//camera position [x,y,z] (block)
-    [225,0,10],//camera angle [h,v,scale] (degree)
+    [100,50,1.7],//camera position [x,y,z] (block)
+    [240,0,10],//camera angle [h,v,scale] (degree)
     [10,10],
     [640,480],//display
 ]
@@ -355,37 +355,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
 
 
 
-//     const memo = [1];
-//     function preCalc(max) {
-//         const prevMax = memo.length;
-//         let cur = memo[prevMax-1];
-//         for (let i = prevMax; i <= max; i++) {
-//             cur /= i;
-//             memo.push(cur);
-//         }
-//     };
-//     function factorialInv(n) {
-//         return memo[n];
-//     }
-//     function sin(z) {
-//         z = z % (Math.PI * 2);
-//         let r = 0;
-//         for (let n = 0; n < 10; n++) {
-//             r += ((-1) ** n) * factorialInv(2 * n + 1) * (z ** (2 * n + 1));
-//         }
-//         return r;
-//     }
-//     function cos(z) {
-//         z = z%(Math.PI*2);
-//         let r = 0;
-//         for (n=0;n<10;n++) {
-//             r += ( (-1)**n*factorialInv(2*n) ) * ( z**(2*n) );
-//         }
-//         return r;
-//     }
-// preCalc(2 * 10 + 1);
-
-
 // keyboard
 document.onkeydown = function(e) {
     keystatus_d[event.keyCode] = true;
@@ -406,10 +375,10 @@ let keyw = {}
 {
     keyw[87] = ()=>move(0.5);
     keyw[83] = ()=>move(-0.5);
-    keyw[65] = ()=>cam_property[1][0]-=3;
-    keyw[68] = ()=>cam_property[1][0]+=3;
-    keyw[82] = ()=>cam_property[1][1]+=3;
-    keyw[70] = ()=>cam_property[1][1]-=3;
+    keyw[65] = ()=>cam_property[1][0]-=1;
+    keyw[68] = ()=>cam_property[1][0]+=1;
+    keyw[82] = ()=>cam_property[1][1]+=1;
+    keyw[70] = ()=>cam_property[1][1]-=1;
 }
 let keystatus_d = {};
 function keyinput() {
@@ -422,7 +391,7 @@ function keyinput() {
         }
     }
 }
-setInterval(keyinput,100)
+setInterval(keyinput,50)
 
 // resize window
     function resizeImg() {
