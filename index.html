@@ -150,7 +150,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
-        drsel.value = "haruksite";
+        drsel.value = "home";
         scenename = drsel.value;
         var obj = scene[scenename][1];
         drsel.onchange = event => {
@@ -177,12 +177,12 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             iarr[index+2] = 10; // Blue
             iarr[index+3] = 255; // Alpha
         }
-        if (cframe%30==1) {
-            obj = addLen(obj);
+        obj = addLen(obj);
+        if (cframe%20==1) {
             obj = sortP(obj);
         }
         polygons = obj;
-        vl = VNormalized([30,15,50]);
+        vl = VNormalized([40,5,50]);
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
@@ -198,6 +198,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             normal = VNormalized(VCProduct(v12,v13)); //法線
             angl = VIProduct(vl,normal); // 0<=normal<=1
             light = Math.max(angl,angl*0.1)*0.9+0.3;
+            light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(polygons[i][7]+1000));
             
             xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
             xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
@@ -403,10 +404,10 @@ let keyw = {}
 {
     keyw[87] = ()=>move(0.5);
     keyw[83] = ()=>move(-0.5);
-    keyw[65] = ()=>cam_property[1][0]-=1;
-    keyw[68] = ()=>cam_property[1][0]+=1;
-    keyw[82] = ()=>cam_property[1][1]+=1;
-    keyw[70] = ()=>cam_property[1][1]-=1;
+    keyw[65] = ()=>cam_property[1][0]-=2;
+    keyw[68] = ()=>cam_property[1][0]+=2;
+    keyw[82] = ()=>cam_property[1][1]+=2;
+    keyw[70] = ()=>cam_property[1][1]-=2;
 }
 let keystatus_d = {};
 function keyinput() {
