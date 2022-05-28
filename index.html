@@ -19,7 +19,7 @@
     </head>
     <body>
         <div id="img_area">
-            <img id="imgOutput" style="display: block;filter: blur(0.5px);">
+            <canvas id="imgOut" style="image-rendering: pixelated;"></canvas>
         </div>
         <div id="control_area" class="notselectable"><!--control-->
             <center>
@@ -166,7 +166,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         cframe++;
         x = cam_property[3][0];
         y = cam_property[3][1];
-        let co = document.createElement("canvas");
+        let co = document.getElementById("imgOut");
         co.height=y;co.width=x;
         ctx = co.getContext('2d');
         let iarr = new Uint8ClampedArray(x*y*4);
@@ -220,7 +220,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             }
         }
         ctx.putImageData(new ImageData(iarr,x,y),0,0);
-        document.getElementById("imgOutput").src = co.toDataURL('image/png');
         fps = (Date.now() - startTime) / 1000;
         startTime = Date.now();
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
@@ -423,29 +422,30 @@ function keyinput() {
 setInterval(keyinput,50)
 
 // resize window
-    function resizeImg() {
+function resizeImg() {
         dw = cam_property[3][0];
         dh = cam_property[3][1];
-        let bottom_area = 17;
+        let bottom_area = 0;
+        let rw = 0;let rh = 0;
         let ww = window.innerWidth;
-        let rw = 0;let rh = 0;let vm = 1;let hm = 1;
-        let wh = window.innerHeight-bottom_area-vm;
-        if (ww*dh>wh*dw) {
-            rw = wh*dw/dh;
-            rh = wh;
-            hm += (ww-rw)/2;
+        let wh = window.innerHeight-bottom_area;
+        let csc = 1
+        hcsc = ww/dw
+        wcsc = wh/dh
+        console.log(hcsc,wcsc)
+        if (hcsc>wcsc) {
+            csc = wcsc
+            rw = (ww - dw*csc)/2
         }
         else {
-            rw = ww;
-            rh = ww*dh/dw;
-            vm += (wh-rh)/2;
+            csc = hcsc
+            rh = (wh - dh*csc)/2
         }
-        document.getElementById("imgOutput").style.marginTop = (vm).toString()+"px";
-        document.getElementById("imgOutput").style.marginBottom = (vm).toString()+"px";
-        document.getElementById("imgOutput").style.marginLeft = (hm).toString()+"px";
-        document.getElementById("imgOutput").style.marginRight = (hm).toString()+"px";
-        document.getElementById("imgOutput").style.width = (rw).toString()+"px";
-        document.getElementById("imgOutput").style.height = (rh).toString()+"px";
+        document.getElementById("imgOut").style.marginTop = (rh).toString()+"px";
+        document.getElementById("imgOut").style.marginBottom = (rh).toString()+"px";
+        document.getElementById("imgOut").style.marginLeft = (rw).toString()+"px";
+        document.getElementById("imgOut").style.marginRight = (rw).toString()+"px";
+        document.getElementById("imgOut").style.transform = "scale("+csc.toString()+","+csc.toString()+")";
     };
 window.onresize = resizeImg;
 resizeImg(); // first resize
@@ -507,6 +507,10 @@ p {
     border-radius: 5px;
     background: rgba(255,255,255,0.6);
     width: 500px;
+}
+
+#imgOut {
+    transform-origin: top left;
 }
 </style>
 
