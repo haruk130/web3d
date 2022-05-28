@@ -162,13 +162,14 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     let cframe = 0;
 
     setTimeout(mkimg,10);
+    
+    var co = document.getElementById("imgOut");
+    var ctx = co.getContext('2d');
     function mkimg() {
         cframe++;
         x = cam_property[3][0];
         y = cam_property[3][1];
-        let co = document.getElementById("imgOut");
         co.height=y;co.width=x;
-        ctx = co.getContext('2d');
         let iarr = new Uint8ClampedArray(x*y*4);
         for (let i = 0; i < x*y; i++) {
             let index = (i)*4; // index of position [ix,iy]
