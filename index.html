@@ -171,6 +171,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         y = cam_property[3][1];
         co.height=y;co.width=x;
         let iarr = new Uint8ClampedArray(x*y*4);
+        let zbuf = new Uint8Array(x*y).fill(0);
         for (let i = 0; i < x*y; i++) {
             let index = (i)*4; // index of position [ix,iy]
             iarr[index+0] = 10; // Red
@@ -184,7 +185,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         }
         polygons = obj;
         vl = VNormalized([40,5,50]);
-        for (i=0;i<polygons.length;i++) {
+        for (i=polygons.length-1;i>=0;i--) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
             p2 = pos_3t2d(t[1]);
@@ -210,11 +211,15 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             if (t[3][0]==0) {
                 for (iy = ymin; iy < ymax; iy++) {
                     for (ix = xmin; ix < xmax; ix++) {
-                        if (inclusion([ix,iy],dp)) {
-                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                            iarr[index+0] = t[4][0]*light;
-                            iarr[index+1] = t[5][0]*light;
-                            iarr[index+2] = t[6][0]*light;
+                        let idex = iy*x+ix
+                        if (zbuf[idex]==0) {
+                            if (inclusion([ix,iy],dp)) {
+                                zbuf[idex] = 1
+                                index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                                iarr[index+0] = t[4][0]*light;
+                                iarr[index+1] = t[5][0]*light;
+                                iarr[index+2] = t[6][0]*light;
+                            }
                         }
                     }
                 }
@@ -229,7 +234,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
 
 
     function sortP(ps) {
-        
         psl = ps.length;
         let sorted = false;
         let bu;let i=0;

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>draw sample</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <canvas id="imgOut"></canvas>
+    </body>
+</html>
+<script>
+    
+    vertices = [[0,0],[10,100],[100,0]]
+
+    function mkimg(x,y) {
+        let iarr = new Uint8ClampedArray(x*y*4);
+        for (let iy = 0; iy < y; iy++) {
+            for (let ix = 0; ix < x; ix++) {
+                let index = (iy*x+ix)*4; // index of position [ix,iy]
+                iarr[index+0] = 100; // Red
+                iarr[index+1] = 100; // Green
+                iarr[index+2] = 100; // Blue
+                iarr[index+3] = 250; // Alpha
+            }
+        }
+            dp = vertices;
+                for (iy = 0; iy < 100; iy++) {
+                    for (ix = 0; ix < 100; ix++) {
+                        if (inclusion([ix,iy],dp)) {
+                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                            iarr[index+0] = 200;
+                            iarr[index+1] = 100;
+                            iarr[index+2] = 100;
+                        }
+                    }
+                }
+        let co = document.getElementById("imgOut");
+        co.height=y;co.width=x;co.getContext('2d').putImageData(new ImageData(iarr,x,y),0,0);
+    }
+    mkimg(100,100)
+    function crossp(a1,b1,b2) {
+        let cx = (b2-b1)/a1
+        let cy = (a1*cx + b1)
+        return [cx,cy]
+    }
+
+    var img = Array.from(Array(100),_=>Array(100).fill(0));
+
+    function dtri() {
+        let v = vertices;
+        edges = [[v[0],v[1]],[v[1],v[2]],[v[2],v[0]]];
+        edgs = []
+        for (let ce=0;ce<3;ce++) {
+            let e = edges[ce];
+            let a = (e[1][0]-e[0][0])/(e[1][1]-e[0][1])
+            let b = e[0][0] - a*e[0][1]
+            edgs.push([a,b])
+            console.log(e,a,b,(e[1][0]-e[0][0]),(e[1][1]-e[0][1]))
+        }
+        for (let ly=0;ly<2;ly++) {
+            for (let ll=0;ll<3;ll++) {
+                a = edgs[ll][0]
+                b1 = edgs[ll][1]
+                b2 = ly
+                x = (b2-b1)/a
+                y = a*x+b1
+                console.log(x,y)
+            }
+        }
+    }
+
+
+
+    
+    function inclusion(p1, carr) { // 三角形の内外判定
+        let a = [carr[0][0]-p1[0],carr[0][1]-p1[1]];
+        let b = [carr[1][0]-p1[0],carr[1][1]-p1[1]];
+        let c = [carr[2][0]-p1[0],carr[2][1]-p1[1]];
+        let ab = a[0]*b[1]-a[1]*b[0];
+        let bc = b[0]*c[1]-b[1]*c[0];
+        let ca = c[0]*a[1]-c[1]*a[0];
+        return ab<=0&&bc<=0&&ca<=0;
+    };
+
+</script>
