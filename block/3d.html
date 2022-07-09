@@ -22,6 +22,11 @@
 
     </head>
     <body>
+        <div>
+            <div style="position: absolute;background-color: beige;bottom: 20PX;">
+                <a href="../">3Dシリーズ メニュー</a>
+            </div>
+        </div>
         <div id="img_area">
             <canvas id="imgOut" style="image-rendering: pixelated;"></canvas>
         </div>
@@ -113,6 +118,16 @@
 </script>
 <script src="object.js"></script>
 <script src="makeworld.js"></script>
+
+<script src="texture/field_blocks.js"></script>
+
+<script>
+    
+
+    let texture = {}
+    Object.assign(texture,field_blocks)
+</script>
+
 <script>
 
 var plocka = true
