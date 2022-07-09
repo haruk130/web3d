@@ -364,9 +364,9 @@ function eachchange(arr,mx,my,mz,rz) {
         let zbuf = new Uint8Array(x*y).fill(0);
         for (let i = 0; i < x*y; i++) {
             let index = (i)*4; // index of position [ix,iy]
-            iarr[index+0] = 10; // Red
-            iarr[index+1] = 10; // Green
-            iarr[index+2] = 10; // Blue
+            iarr[index+0] = 100; // Red
+            iarr[index+1] = 150; // Green
+            iarr[index+2] = 200; // Blue
             iarr[index+3] = 255; // Alpha
         }
         obj = makeobj()
