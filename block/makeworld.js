@@ -47,7 +47,7 @@
         scene["game"] = [[0],[]];
         fmaze = scene["game"][1];
 
-        let txtname = 400
+        let txtname = 300
 
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
