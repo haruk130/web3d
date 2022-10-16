@@ -318,8 +318,8 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     function rotate3d_x(pos,r_x) { // x軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         _x3 = _x1;
-        let cosrx = lcos(r_x);
-        let sinrx = lsin(r_x);
+        let cosrx = cos(r_x);
+        let sinrx = sin(r_x);
         _y3 = _y1*cosrx-_z1*sinrx;
         _z3 = _y1*sinrx+_z1*cosrx;
         return [_x3,_y3,_z3];
@@ -327,20 +327,20 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     function rotate3d_z(pos,r_z) { // z軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
         _z3 = _z1;
-        let cosrz = lcos(r_z);
-        let sinrz = lsin(r_z);
+        let cosrz = cos(r_z);
+        let sinrz = sin(r_z);
         _x3 = _x1*cosrz-_y1*sinrz;
         _y3 = _x1*sinrz+_y1*cosrz;
         return [_x3,_y3,_z3];
     }
     function rotate3d(pos,r_x,r_y,r_z) { // 回転
         _x1 = pos[0];_y = pos[1];_z = pos[2];
-        let cosrx = lcos(r_x);
-        let sinrx = lsin(r_x);
-        let cosry = lcos(r_y);
-        let sinry = lsin(r_y);
-        let cosrz = lcos(r_z);
-        let sinrz = lsin(r_z);
+        let cosrx = cos(r_x);
+        let sinrx = sin(r_x);
+        let cosry = cos(r_y);
+        let sinry = sin(r_y);
+        let cosrz = cos(r_z);
+        let sinrz = sin(r_z);
         _y2 = _y*cosrx-_z*sinrx;
         _z1 = _y*sinrx+_z*cosrx;
         _x2 = _x1*cosry+_z1*sinry;
@@ -351,8 +351,8 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
     function rotate2d(pos,r) {
         var _x = pos[0];_y = pos[1];
-        let cosr = lcos(r);
-        let sinr = lsin(r);
+        let cosr = cos(r);
+        let sinr = sin(r);
         var x = _x*cosr-_y*sinr;
         var y = _x*sinr+_y*cosr;
         return [x,y];
@@ -364,12 +364,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         cam_property[0][1] += los[1];
     }
 
-    function lsin(z) {
-        return Math.sin(z*(Math.PI/180));
-    }
-    function lcos(z) {
-        return Math.cos(z*(Math.PI/180));
-    }
     function sin(z) {
         return Math.sin(z*(Math.PI/180));
     }
