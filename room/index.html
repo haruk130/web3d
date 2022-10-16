@@ -351,8 +351,10 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
     function rotate2d(pos,r) {
         var _x = pos[0];_y = pos[1];
-        var x = _x*lcos(r)-_y*lsin(r);
-        var y = _x*lsin(r)+_y*lcos(r);
+        let cosr = lcos(r);
+        let sinr = lsin(r);
+        var x = _x*cosr-_y*sinr;
+        var y = _x*sinr+_y*cosr;
         return [x,y];
     }
 
@@ -362,27 +364,11 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         cam_property[0][1] += los[1];
     }
 
-    var ltsin = [];
-var ltcos = [];
-for (let i=-360;i<=360;i++) {
-    ltsin.push(sin(i));
-    ltcos.push(cos(i));
-}
-
-
     function lsin(z) {
-        idx = Math.floor(z%360);
-        return ltsin[idx+360];
+        return Math.sin(z*(Math.PI/180));
     }
     function lcos(z) {
-        idx = Math.floor(z%360);
-        return ltcos[idx+360];
-    }
-    function lsin(z) {
-        return sin(z);
-    }
-    function lcos(z) {
-        return cos(z);
+        return Math.cos(z*(Math.PI/180));
     }
     function sin(z) {
         return Math.sin(z*(Math.PI/180));
@@ -391,7 +377,7 @@ for (let i=-360;i<=360;i++) {
         return Math.cos(z*(Math.PI/180));
     }
     // function sin(z) {
-    //     z = z%(Math.PI*2);
+    //     z = (z*(Math.PI/180))%(Math.PI*2);
     //     let r = 0;
     //     let f = 0;
     //     for (n=0;n<10;n++) {
@@ -400,7 +386,7 @@ for (let i=-360;i<=360;i++) {
     //     return r;
     // }
     // function cos(z) {
-    //     z = z%(Math.PI*2);
+    //     z = (z*(Math.PI/180))%(Math.PI*2);
     //     let r = 0;
     //     for (n=0;n<10;n++) {
     //         r += ( (-1)**n/factonal(2*n) ) * ( z**(2*n) );
