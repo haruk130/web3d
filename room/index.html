@@ -92,7 +92,7 @@
         </div>
         <div id="footer" class="notselectable">
             <center>
-                <pre>2022 haruk1234</pre>
+                <pre>2022 bem130</pre>
             </center>
         </div>
     </body>
@@ -119,8 +119,9 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         "SXGA": [1280,1024,5,4],
         "UXGA": [1600,1200,4,3],
         "FHD": [1920,1080,16,9],
-        "4K": [3840,2160,16,9],
-        "8K": [7680,4320,16,9],
+        "UWHD": [2560,1080,16,9],
+        "4K UHD": [3840,2160,16,9],
+        "8K UHD": [7680,4320,16,9],
     };
 
     {
@@ -189,42 +190,39 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             obj = sortP(obj);
         }
         polygons = obj;
-        vl = VNormalized([40,5,50]);
+        vl = VNormalized([40,5,50]); // 平行光源
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
+
+            // 各頂点の投影
             p1 = pos_3t2d(t[0]);
             p2 = pos_3t2d(t[1]);
             p3 = pos_3t2d(t[2]);
 
-            if (p1[2]&&p2[2]&&p3[2]) {
-                continue;
-            }
+            if (p1[2]&&p2[2]&&p3[2]) {continue;}
 
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
-            normal = VNormalized(VCProduct(v12,v13)); //法線
+            normal = VNormalized(VCProduct(v12,v13)); //法線ベクトル
             angl = VIProduct(vl,normal); // 0<=normal<=1
-            light = Math.max(angl,angl*0.1)*0.9+0.3;
-            light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(polygons[i][7]+1000));
+            light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(polygons[i][7]+1000)); // 面と平行光源の角度
             
+            // 三角形を描画する範囲
             xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
             xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
             ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][1]);
             ymin = Math.max(Math.min(p1[1],p2[1],p3[1]),0);
 
-            dp = [p1,p2,p3];
-            if (t[3][0]==0) {
-                for (iy = ymin; iy < ymax; iy++) {
-                    for (ix = xmin; ix < xmax; ix++) {
-                        let idex = iy*x+ix
-                        if (zbuf[idex]==0) {
-                            if (inclusion([ix,iy],dp)) {
-                                zbuf[idex] = 1
-                                index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                                iarr[index+0] = t[4][0]*light;
-                                iarr[index+1] = t[5][0]*light;
-                                iarr[index+2] = t[6][0]*light;
-                            }
+            for (iy = ymin; iy < ymax; iy++) {
+                for (ix = xmin; ix < xmax; ix++) {
+                    let idex = iy*x+ix; // 描画するアドレス
+                    if (zbuf[idex]==0) { // 既に描画されていない確認
+                        if (inclusion([ix,iy],[p1,p2,p3])) { // 三角形の内外判定
+                            zbuf[idex] = 1; // ピクセルの描画済みフラグ
+                            index = idex*4;
+                            iarr[index+0] = t[4][0]*light; // 赤の描画
+                            iarr[index+1] = t[5][0]*light; // 緑の描画
+                            iarr[index+2] = t[6][0]*light; // 青の描画
                         }
                     }
                 }
